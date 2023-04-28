@@ -1,0 +1,1 @@
+tutaj trzymam wszystkie modele ktore przesylam do backendu przez api zeby mogl je odczytac sobie
