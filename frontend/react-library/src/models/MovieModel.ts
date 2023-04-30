@@ -1,4 +1,4 @@
-class MovieModels {
+class MovieModel {
     id: number;
     title: string;
     director?: string;
@@ -21,4 +21,4 @@ class MovieModels {
     }
 }
 
-export default MovieModels;
+export default MovieModel;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import MovieModels from "../../models/MovieModels";
+import MovieModel from "../../models/MovieModel";
 import SpinnerLoading from "../utils/SpinnerLoading";
 import {StarsReview} from "../utils/StarsReview";
 import {CheckoutAndReviewBox} from "./CheckoutAndReviewBox";
@@ -17,7 +17,7 @@ export default function MovieCheckoutPage() {
     const {authState} = useOktaAuth();
 
     //Filmy
-    const [movie, setMovie] = useState<MovieModels>();
+    const [movie, setMovie] = useState<MovieModel>();
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
@@ -52,7 +52,7 @@ export default function MovieCheckoutPage() {
             const responseJson = await response.json();
 
 
-            const loadedMovie: MovieModels = {
+            const loadedMovie: MovieModel = {
                 id: responseJson.id,
                 title: responseJson.title,
                 director: responseJson.director,

@@ -5,7 +5,7 @@ import lombok.Data;
 
 
 @Data
-public class AddBookRequest {
+public class AddMovieRequest {
 
     private String title;
 

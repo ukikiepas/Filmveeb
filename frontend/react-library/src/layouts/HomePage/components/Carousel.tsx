@@ -1,12 +1,12 @@
 import {ReturnMovie} from "./ReturnMovie";
 import {useEffect, useState} from "react";
-import MovieModels from "../../../models/MovieModels";
+import MovieModel from "../../../models/MovieModel";
 import SpinnerLoading from "../../utils/SpinnerLoading";
 import {Link} from "react-router-dom";
 
 export default function Carousel(){
 
-    const[movies, setMovies] = useState<MovieModels[]>([])
+    const[movies, setMovies] = useState<MovieModel[]>([])
     const[isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
@@ -27,7 +27,7 @@ export default function Carousel(){
 
             const responseData = responseJson._embedded.movies;
 
-            const loadedMovies: MovieModels[] = [];
+            const loadedMovies: MovieModel[] = [];
 
 
             for (const key in responseData) {

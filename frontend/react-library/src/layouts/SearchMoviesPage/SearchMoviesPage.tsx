@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
-import MovieModels from "../../models/MovieModels";
+import MovieModel from "../../models/MovieModel";
 import SpinnerLoading from "../utils/SpinnerLoading";
 import {SearchMovie} from "./components/SearchMovie";
 import {Pagination} from "../utils/Pagination";
 
 export default function SearchMoviesPage(){
 
-    const [movies, setMovies] = useState<MovieModels[]>([]);
+    const [movies, setMovies] = useState<MovieModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
@@ -17,6 +17,8 @@ export default function SearchMoviesPage(){
     const [searchUrl, setSearchUrl] = useState('');
     const [categorySelection, setCategorySelection] = useState('Gatunek filmu');
 
+
+    //Do pobierania wszystkich filmow z bazy
     useEffect(() => {
         const fetchMovies = async () => {
             const baseUrl: string = "http://localhost:8080/api/movies";
@@ -43,7 +45,7 @@ export default function SearchMoviesPage(){
             setTotalAmountOfMovies(responseJson.page.totalElements);
             setTotalPages(responseJson.page.totalPages);
 
-            const loadedMovies: MovieModels[] = [];
+            const loadedMovies: MovieModel[] = [];
 
             for (const key in responseData) {
                 loadedMovies.push({

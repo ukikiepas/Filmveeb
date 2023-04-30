@@ -46,7 +46,7 @@ export const AddNewMovie = () => {
 
 
     async function submitNewMovie(){
-        const url = `http://localhost:8080/api/admin/secure/add/book`;
+        const url = `http://localhost:8080/api/admin/secure/add/movie`;
         if(authState?.isAuthenticated && title !== '' && director !=='' && director!=='' && category!=='' && description !=='' && copies >=0 ){
             const movie: AddMovieRequest = new AddMovieRequest(title, director, description, copies, category, selectedImage);
             const requestOptions = {

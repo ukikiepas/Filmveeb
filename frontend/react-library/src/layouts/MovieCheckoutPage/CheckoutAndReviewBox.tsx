@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import MovieModels from "../../models/MovieModels";
+import MovieModel from "../../models/MovieModel";
 import {LeaveAReview} from "../utils/LeaveAReview";
 
-export const CheckoutAndReviewBox: React.FC<{ movie: MovieModels | undefined, mobile: boolean,
+export const CheckoutAndReviewBox: React.FC<{ movie: MovieModel | undefined, mobile: boolean,
         currentLoansCount: number, isAuthenticated: any, isCheckedOut: boolean
         checkoutMovie: any, isReviewLeft: boolean, submitReview: any}> = (props) => {
 

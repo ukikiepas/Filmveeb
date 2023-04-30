@@ -1,7 +1,7 @@
-import MovieModels from "../../../models/MovieModels";
+import MovieModel from "../../../models/MovieModel";
 import {Link} from "react-router-dom";
 
-export const SearchMovie: React.FC<{ movie: MovieModels }> = (props) => {
+export const SearchMovie: React.FC<{ movie: MovieModel }> = (props) => {
     return (
         <div className='card mt-3 shadow p-3 mb-3 bg-body rounded'>
             <div className='row g-0'>

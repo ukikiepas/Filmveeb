@@ -1,9 +1,9 @@
-import MovieModels from "../../../models/MovieModels";
+import MovieModel from "../../../models/MovieModel";
 import React from "react";
 import {Link} from "react-router-dom";
 
 
-export const ReturnMovie: React.FC<{movie: MovieModels}> = (props) => {
+export const ReturnMovie: React.FC<{movie: MovieModel}> = (props) => {
 
 
     return (

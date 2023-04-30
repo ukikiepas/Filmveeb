@@ -3,6 +3,7 @@ import { useState } from 'react';
 import {Redirect} from "react-router";
 import {AdminMessages} from "./components/AdminMessages";
 import {AddNewMovie} from "./components/AddNewMovie";
+import {ChangeAmountOfMovies} from "./components/ChangeAmountOfMovies";
 
 export const ManageFilmvebPage = () => {
 
@@ -66,7 +67,7 @@ export const ManageFilmvebPage = () => {
                         <AddNewMovie/>
                     </div>
                     <div className='tab-pane fade' id='nav-quantity' role='tabpanel' aria-labelledby='nav-quantity-tab'>
-                        {changeQuantityOfMoviesClick ? <></> : <>Change Quantity</>}
+                        {changeQuantityOfMoviesClick ? <ChangeAmountOfMovies/> : <></>}
                     </div>
                     <div className='tab-pane fade' id='nav-messages' role='tabpanel' aria-labelledby='nav-messages-tab'>
                         {messagesClick ? <AdminMessages/> : <></> }

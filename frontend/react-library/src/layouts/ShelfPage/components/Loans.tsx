@@ -5,7 +5,7 @@ import SpinnerLoading from "../../utils/SpinnerLoading";
 import {Link} from "react-router-dom";
 import {wait} from "@testing-library/user-event/dist/utils";
 import ShelfCurrentLoans from "../../../models/ShelfCurrentLoans";
-import MovieModels from "../../../models/MovieModels";
+import MovieModel from "../../../models/MovieModel";
 import {LoansModal} from "./LoansModal";
 
 export const Loans = () => {
@@ -48,7 +48,7 @@ export const Loans = () => {
                 //tutaj nie działało tak jak zawsze robiłem i musiałem w ten sposób
                 for (let i = 0; i < shelfCurrentLoansResponseJson.length; i++) {
                     const { category, copies, copiesAvailable, description, director, id, img, title } = shelfCurrentLoansResponseJson[i].movie;
-                    const movie = new MovieModels(id, title, director, description, copies, copiesAvailable, category, img);
+                    const movie = new MovieModel(id, title, director, description, copies, copiesAvailable, category, img);
                     const loan = new ShelfCurrentLoans(movie, shelfCurrentLoansResponseJson[i].daysLeft);
                     shelfCurrentLoans.push(loan);
                 }
