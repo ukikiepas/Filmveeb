@@ -2,6 +2,7 @@ import { useOktaAuth } from '@okta/okta-react';
 import { useState } from 'react';
 import {Redirect} from "react-router";
 import {AdminMessages} from "./components/AdminMessages";
+import {AddNewMovie} from "./components/AddNewMovie";
 
 export const ManageFilmvebPage = () => {
 
@@ -62,7 +63,7 @@ export const ManageFilmvebPage = () => {
                 <div className='tab-content' id='nav-tabContent'>
                     <div className='tab-pane fade show active' id='nav-add-book' role='tabpanel'
                          aria-labelledby='nav-add-book-tab'>
-                        Niedługo bedzie smigac :))
+                        <AddNewMovie/>
                     </div>
                     <div className='tab-pane fade' id='nav-quantity' role='tabpanel' aria-labelledby='nav-quantity-tab'>
                         {changeQuantityOfMoviesClick ? <></> : <>Change Quantity</>}

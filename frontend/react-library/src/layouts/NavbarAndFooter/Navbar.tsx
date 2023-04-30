@@ -83,7 +83,7 @@ export const Navbar = () => {
                         </li>
 
                         {!authState.isAuthenticated ?
-                            <li className='nav-item m-1'>
+                            <li className='nav-item '>
                                 <Link type='button' className='btn btn-outline-light' to='/login'>
                                     Zaloguj się
                                 </Link>

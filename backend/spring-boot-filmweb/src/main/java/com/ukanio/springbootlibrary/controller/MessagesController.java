@@ -2,7 +2,7 @@ package com.ukanio.springbootlibrary.controller;
 
 
 import com.ukanio.springbootlibrary.entity.Message;
-import com.ukanio.springbootlibrary.responsemodels.AdminQuestionRequest;
+import com.ukanio.springbootlibrary.requestmodels.AdminQuestionRequest;
 import com.ukanio.springbootlibrary.service.MessagesService;
 import com.ukanio.springbootlibrary.utils.ExtractJWT;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,7 @@ public class MessagesController {
         this.messagesService = messagesService;
     }
 
+    //ednpoint do dodawania wiadomosci przez usera
     @PostMapping("/secure/add/message")
     public void postMessage(@RequestHeader(value = "Authorization") String token, @RequestBody Message messageRequest){
         String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");

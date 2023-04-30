@@ -1,4 +1,4 @@
-package com.ukanio.springbootlibrary.responsemodels;
+package com.ukanio.springbootlibrary.requestmodels;
 
 
 import lombok.Data;

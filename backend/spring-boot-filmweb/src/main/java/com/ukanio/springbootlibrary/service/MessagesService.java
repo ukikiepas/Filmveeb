@@ -2,7 +2,7 @@ package com.ukanio.springbootlibrary.service;
 
 import com.ukanio.springbootlibrary.dao.MessageRepository;
 import com.ukanio.springbootlibrary.entity.Message;
-import com.ukanio.springbootlibrary.responsemodels.AdminQuestionRequest;
+import com.ukanio.springbootlibrary.requestmodels.AdminQuestionRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
