@@ -26,7 +26,9 @@ export default function MovieCheckoutPage() {
     const [totalStars, setTotalStars] = useState(0);
     const [isLoadingReview, setIsLoadingReview] = useState(true);
     const [isReviewLeft, setIsReviewLeft] = useState(false);
+    const [isReviewChanged, setIsReviewChanged] = useState(false);
     const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
+    const [reviewLeftStars, setReviewLeftStars] = useState<number>(0);
 
     //Wypozyczenia -> staty do wypozyczen
     const [currentLoansCount, setCurrentLoansCount] = useState(0);
@@ -38,7 +40,12 @@ export default function MovieCheckoutPage() {
 
     const movieId = (window.location.pathname).split('/')[2];
 
-    // use Effect do wczytywania ksiazki
+
+
+
+
+
+    // use Effect do wczytywania filmu
     useEffect(() => {
         const fetchMovie = async () => {
             const baseUrl: string = `http://localhost:8080/api/movies/${movieId}`;
@@ -62,6 +69,7 @@ export default function MovieCheckoutPage() {
                 category: responseJson.category,
                 img: responseJson.img,
             };
+
 
 
             setMovie(loadedMovie);
@@ -127,6 +135,7 @@ export default function MovieCheckoutPage() {
     }, [isReviewLeft])
 
 
+    //use effect do wczytywania recenzji uzytkownika
     useEffect(() => {
 
         const fetchUserReviewMovie = async () => {
@@ -148,6 +157,7 @@ export default function MovieCheckoutPage() {
                     throw new Error('Something went wrong ');
                 }
                 const userReviewResponseJson = await userReview.json();
+                await getMovieRatingByUser();
                 setIsReviewLeft(userReviewResponseJson);
             }
             setIsLoadingUserReview(false);
@@ -157,10 +167,9 @@ export default function MovieCheckoutPage() {
             setHttpError(error.message);
         })
 
-    }, [authState])
+    }, [authState, isReviewLeft])
 
-
-    //use effect do wczytywania recenzji
+    //use effect do wczytywania ilosci wypozyczonych filmow
     useEffect( () => {
         const fetchUserCurrentLoansCount = async () => {
             if(authState && authState.isAuthenticated){
@@ -249,6 +258,8 @@ export default function MovieCheckoutPage() {
 
     }
 
+
+    // do wyslania opini
     async function submitReview(starInput: number, reviewDescription: string){
 
         let movieId: number = 0;
@@ -271,8 +282,57 @@ export default function MovieCheckoutPage() {
         if(!returnResponse.ok){
             throw new Error("Something went wrong!!");
         }
-        setIsReviewLeft(true);
+        setIsReviewLeft(!isReviewLeft);
+        //window.location.reload();
     }
+
+
+    // do przeslania zaktualizowanie opini
+    async function updateReview(starInput: number, reviewDescription: string){
+
+        let movieId: number = 0;
+        if(movie?.id){
+            movieId = movie.id;
+        }
+
+        const reviewRequestModel = new ReviewRequestModel(starInput, movieId, reviewDescription);
+        const url = `http://localhost:8080/api/reviews/secure/user/updateReview`;
+        const requestOptions = {
+            method: 'PUT',
+            headers: {
+                Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            // zamieniam tym cialko z TS/JS na Jsona zeby moglo przejsc przez PUT'a
+            body: JSON.stringify(reviewRequestModel)
+        };
+        const returnResponse = await fetch(url, requestOptions);
+        if(!returnResponse.ok){
+            throw new Error("Something went wrong!!");
+        }
+        setIsReviewChanged(!isReviewChanged);
+        setIsReviewLeft(!isReviewLeft);
+    }
+
+    // do wzieca punktow gwiazdek konkretnego uzytkownika pod konkretnym filmem
+    async function getMovieRatingByUser(){
+        const url = `http://localhost:8080/api/reviews/secure/user/movie/rating/?movieId=${movieId}`;
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        const returnResponse = await fetch(url, requestOptions);
+        if(!returnResponse.ok){
+            throw new Error("Something went wrong!!!!!!!!!");
+        }
+        const returnResponseJson = await returnResponse.json()
+        setReviewLeftStars(returnResponseJson)
+    }
+
+
 
     if (isLoading || isLoadingReview || isLoadingCurrentLoansCount || isLoadingMovieCheckout || isLoadingUserReview) {
         return (
@@ -309,7 +369,7 @@ export default function MovieCheckoutPage() {
                         </div>
                     </div>
                     <CheckoutAndReviewBox movie={movie} mobile={false} currentLoansCount={currentLoansCount} isAuthenticated={authState}
-                                          isCheckedOut={isCheckedOut} checkoutMovie={checkoutMovie} isReviewLeft={isReviewLeft} submitReview={submitReview}/>
+                                          isCheckedOut={isCheckedOut} checkoutMovie={checkoutMovie} isReviewLeft={isReviewLeft} submitReview={submitReview} updateReview={updateReview} reviewLeftStars={reviewLeftStars}/>
                 </div>
                 <hr />
                 <LatestReviews reviews={reviews} movieId={movie?.id} mobile={false} />
@@ -335,7 +395,7 @@ export default function MovieCheckoutPage() {
                     </div>
                 </div>
                 <CheckoutAndReviewBox movie={movie} mobile={true} currentLoansCount={currentLoansCount} isAuthenticated={authState}
-                                      isCheckedOut={isCheckedOut} checkoutMovie={checkoutMovie} isReviewLeft={isReviewLeft} submitReview={submitReview}/>
+                                      isCheckedOut={isCheckedOut} checkoutMovie={checkoutMovie} isReviewLeft={isReviewLeft} submitReview={submitReview} updateReview={updateReview} reviewLeftStars={reviewLeftStars}/>
                 <hr/>
                 <LatestReviews reviews={reviews} movieId={movie?.id} mobile={true}/>
             </div>

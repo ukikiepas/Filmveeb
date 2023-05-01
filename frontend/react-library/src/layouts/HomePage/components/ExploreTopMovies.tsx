@@ -9,7 +9,8 @@ export const ExploreTopMovies = () => {
                     <h1 className='display-5 fw-bold'>Znajdź swój następny film</h1>
                     <p className='col-md-8 fs-4'>Na co masz teraz ochote?</p>
                     <Link type='button' className='btn main-color btn-lg text-white' to='/search'>
-                        Najlepsze filmy</Link>
+                        Najlepsze filmy
+                    </Link>
                 </div>
             </div>
         </div>

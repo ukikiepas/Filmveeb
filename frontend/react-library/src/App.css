@@ -17,9 +17,17 @@
     height: 100%;
 }
 
-.main-color {
-    background-color: #0e76a8 ;
+.main-color{
+    background-color: rgb(14, 118, 168);
+    opacity: 1;
 }
+
+
+.main-color:hover{
+    background-color: rgb(14, 118, 168);
+    opacity: 1;
+}
+
 
 .col-image-left {
     background-image: url("./Images/PublicImages/cinema.jpeg");

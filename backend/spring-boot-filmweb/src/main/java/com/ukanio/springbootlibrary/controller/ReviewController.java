@@ -30,13 +30,34 @@ public class ReviewController {
     }
 
     @GetMapping("/secure/user/movie")
-    public Boolean reviewBookByUser(@RequestHeader(value = "Authorization") String token,
-                                    @RequestParam Long movieId) throws Exception {
+    public Boolean reviewMovieByUser(@RequestHeader(value = "Authorization") String token,
+                                     @RequestParam Long movieId) throws Exception {
         String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
         if(userEmail == null){
             throw new Exception("User email is missing");
         }
         return reviewService.userReviewListed(userEmail, movieId);
+    }
+
+    @GetMapping("/secure/user/movie/rating")
+    public double getMovieRatingByUser(@RequestHeader(value = "Authorization") String token,
+                                    @RequestParam Long movieId) throws Exception {
+        String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
+        if(userEmail == null){
+            throw new Exception("User email is missing");
+        }
+        return  reviewService.getMovieRatingByUser(userEmail, movieId);
+    }
+
+    @PutMapping("/secure/user/updateReview")
+    public void updateReview(@RequestHeader(value = "Authorization") String token,
+                             @RequestBody ReviewRequest reviewRequest) throws Exception{
+        String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
+        if(userEmail == null){
+            throw new Exception("User email is missing");
+        }
+        reviewService.updateReview(userEmail, reviewRequest);
+
     }
 
 }

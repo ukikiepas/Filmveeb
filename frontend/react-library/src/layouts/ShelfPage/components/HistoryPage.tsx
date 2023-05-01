@@ -38,7 +38,7 @@ export const HistoryPage = () => {
                 const historyResponse = await fetch(url, requestOptions);
                 console.log(historyResponse);
                 if(!historyResponse.ok){
-                    throw new Error("Something went wrong łaaaaaaa")
+                    throw new Error("Something went wrong")
                 }
                 const historyResponseJson = await historyResponse.json();
 

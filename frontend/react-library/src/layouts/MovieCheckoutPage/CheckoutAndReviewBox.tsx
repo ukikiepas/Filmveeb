@@ -4,7 +4,7 @@ import {LeaveAReview} from "../utils/LeaveAReview";
 
 export const CheckoutAndReviewBox: React.FC<{ movie: MovieModel | undefined, mobile: boolean,
         currentLoansCount: number, isAuthenticated: any, isCheckedOut: boolean
-        checkoutMovie: any, isReviewLeft: boolean, submitReview: any}> = (props) => {
+        checkoutMovie: any, isReviewLeft: boolean, submitReview: any, updateReview:any, reviewLeftStars:number}> = (props) => {
 
     // logika do tego jaki wysweitlic baton w naszym boxie
     // w zaleznosci od czy zalogowany / czy moze wypozyczc film / czy juz ja wypozyczyl
@@ -26,12 +26,16 @@ export const CheckoutAndReviewBox: React.FC<{ movie: MovieModel | undefined, mob
     function reviewRender(){
         if(props.isAuthenticated && !props.isReviewLeft){
             return(
-                <p>
-                <LeaveAReview submitReview={props.submitReview}/>
-                </p>
+                <div>
+                <LeaveAReview submitReview={props.submitReview} isRevieved={false}  updateReview={props.updateReview} reviewLeftStars={props.reviewLeftStars}/>
+                </div>
             )
         }else if(props.isAuthenticated && props.isReviewLeft){
-
+            return (
+                <div>
+                <LeaveAReview submitReview={props.submitReview} isRevieved={true} updateReview={props.updateReview} reviewLeftStars={props.reviewLeftStars}/>
+                </div>
+            )
         }else {
             return (<div></div>)
         }

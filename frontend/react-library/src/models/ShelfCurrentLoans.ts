@@ -9,6 +9,7 @@ class ShelfCurrentLoans{
     constructor(movie: MovieModel, daysLeft: number) {
         this.movie = movie;
         this.daysLeft = daysLeft;
+
     }
 }
 

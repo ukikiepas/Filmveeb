@@ -7,6 +7,8 @@ import {wait} from "@testing-library/user-event/dist/utils";
 import ShelfCurrentLoans from "../../../models/ShelfCurrentLoans";
 import MovieModel from "../../../models/MovieModel";
 import {LoansModal} from "./LoansModal";
+import {LeaveAReview} from "../../utils/LeaveAReview";
+import IsRevieved from "./IsRevieved";
 
 export const Loans = () => {
 
@@ -22,6 +24,7 @@ export const Loans = () => {
 
     //do zwrotow wypozyczonych filmow
     const[checkout, setCheckout] = useState(false);
+
 
 
     useEffect( () => {
@@ -52,6 +55,8 @@ export const Loans = () => {
                     const loan = new ShelfCurrentLoans(movie, shelfCurrentLoansResponseJson[i].daysLeft);
                     shelfCurrentLoans.push(loan);
                 }
+
+
 
                 setShelfCurrentLoans(shelfCurrentLoans);
             }
@@ -109,6 +114,8 @@ export const Loans = () => {
         setCheckout(!checkout)
     }
 
+
+    // do odnawiania na 7 dni
     async function renewLoan(movieId: number){
         const url = `http://localhost:8080/api/movies/secure/renew/loan/?movieId=${movieId}`;
         const requestOptions = {
@@ -127,10 +134,82 @@ export const Loans = () => {
         setCheckout(!checkout)
     }
 
+    //do sprawdzenia czy dany user juz dał opinie
+    async function checkIfRevieved(movieId: number){
+        const url = `http://localhost:8080/api/reviews/secure/user/movie/?movieId=${movieId}`;
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        const returnResponse = await fetch(url, requestOptions);
+        const returnResponseJson = await returnResponse.json();
+        if(!returnResponse.ok){
+            throw new Error("Something went wrong!");
+        }
+        return returnResponseJson;
+    }
+
+
+
+    const MyFunctionnalComponent: React.FC<{movieId:number, mobile:boolean}> = props => {
+        const[isRevieved, setIsRevieved] = useState(false);
+
+        useEffect(() => {
+            const saveState = async () => {
+                const true_false = await checkIfRevieved(props.movieId);
+                setIsRevieved(true_false);
+                console.log("odpowiedz IS REVIEVED: " + isRevieved)
+            };
+            saveState();
+        }, [isRevieved]);
+
+        return (
+            <div>
+                {props.mobile ?
+                    <div>
+                    {isRevieved?
+                            <Link className='btn btn-success mt-2' to={`/checkout/${props.movieId}`}>
+                                Zmień recenzje
+                            </Link>
+                            :
+                            <Link className='btn btn-primary mt-2' to={`/checkout/${props.movieId}`}>
+                                Zostaw recenzje
+                            </Link>
+                    }
+                    </div>
+                :
+                    <div>
+                    {isRevieved?
+                            <Link className='btn btn-success' to={`/checkout/${props.movieId}`}>
+                                Zmień recenzje
+                            </Link>
+                            :
+                            <Link className='btn btn-primary' to={`/checkout/${props.movieId}`}>
+                                Zostaw recenzje
+                            </Link>
+                    }
+                    </div>
+
+                }
+
+
+
+            </div>
+        );
+    };
+
+
+
+
+
+
 
     return(
         <div>
-             {/*Komputr*/}
+            {/*Komputr*/}
             <div className='d-none d-lg-block mt-2'>
                 {shelfCurrentLoans.length > 0 ?
                     <>
@@ -181,9 +260,8 @@ export const Loans = () => {
                                             <p className='mt-3'>
                                                 Pomóż innym wybrać film na wieczór
                                             </p>
-                                            <Link className='btn btn-primary' to={`/checkout/${shelfCurrentLoan.movie.id}`}>
-                                                Zostaw recenzje
-                                            </Link>
+                                            <MyFunctionnalComponent movieId={shelfCurrentLoan.movie.id} mobile={false}/>
+
                                         </div>
                                     </div>
                                 </div>
@@ -192,7 +270,8 @@ export const Loans = () => {
 
                             </div>
                         ))}
-                    </> :
+                    </>
+                    :
                     <>
                         <h3 className='mt-3'>
                             Obecnie nie masz żadnego wypożyczenia
@@ -213,53 +292,52 @@ export const Loans = () => {
 
                             {shelfCurrentLoans.map(shelfCurrentLoan => (
                                 <div key={shelfCurrentLoan.movie.id}>
-                                        <div className='d-flex justify-content-center align-items-center'>
-                                            {shelfCurrentLoan.movie?.img ?
-                                                <img src={shelfCurrentLoan.movie?.img} width='226' height='349' alt='Movie'/>
-                                                :
-                                                <img src={require('../../../Images/MovieImage/movie1.jpg')}
-                                                     width='226' height='349' alt='Movie'/>
-                                            }
-                                        </div>
-                                        <div className='card d-flex mt-5 mb-3'>
-                                            <div className='card-body container'>
-                                                <div className='mt-3'>
-                                                    <h4>Opcje</h4>
-                                                    {shelfCurrentLoan.daysLeft > 0 &&
-                                                        <p className='text-secondary'>
-                                                            Zostały {shelfCurrentLoan.daysLeft} dni.
-                                                        </p>
-                                                    }
-                                                    {shelfCurrentLoan.daysLeft === 0 &&
-                                                        <p className='text-success'>
-                                                            Do dziś.
-                                                        </p>
-                                                    }
-                                                    {shelfCurrentLoan.daysLeft < 0 &&
-                                                        <p className='text-danger'>
-                                                            Czas przekroczony o {shelfCurrentLoan.daysLeft} dni.
-                                                        </p>
-                                                    }
-                                                    <div className='list-group mt-3'>
-                                                        <button className='list-group-item list-group-item-action'
-                                                                aria-current='true' data-bs-toggle='modal'
-                                                                data-bs-target={`#mobilemodal${shelfCurrentLoan.movie.id}`}>
-                                                            Zarządaj wypożyczeniem
-                                                        </button>
-                                                        <Link to={'search'} className='list-group-item list-group-item-action'>
-                                                            Więcej filmów.
-                                                        </Link>
-                                                    </div>
+                                    <div className='d-flex justify-content-center align-items-center'>
+                                        {shelfCurrentLoan.movie?.img ?
+                                            <img src={shelfCurrentLoan.movie?.img} width='226' height='349' alt='Movie'/>
+                                            :
+                                            <img src={require('../../../Images/MovieImage/movie1.jpg')}
+                                                 width='226' height='349' alt='Movie'/>
+                                        }
+                                    </div>
+                                    <div className='card d-flex mt-5 mb-3'>
+                                        <div className='card-body container'>
+                                            <div className='mt-3'>
+                                                <h4>Opcje</h4>
+                                                {shelfCurrentLoan.daysLeft > 0 &&
+                                                    <p className='text-secondary'>
+                                                        Zostały {shelfCurrentLoan.daysLeft} dni.
+                                                    </p>
+                                                }
+                                                {shelfCurrentLoan.daysLeft === 0 &&
+                                                    <p className='text-success'>
+                                                        Do dziś.
+                                                    </p>
+                                                }
+                                                {shelfCurrentLoan.daysLeft < 0 &&
+                                                    <p className='text-danger'>
+                                                        Czas przekroczony o {shelfCurrentLoan.daysLeft} dni.
+                                                    </p>
+                                                }
+                                                <div className='list-group mt-3'>
+                                                    <button className='list-group-item list-group-item-action'
+                                                            aria-current='true' data-bs-toggle='modal'
+                                                            data-bs-target={`#mobilemodal${shelfCurrentLoan.movie.id}`}>
+                                                        Zarządaj wypożyczeniem
+                                                    </button>
+                                                    <Link to={'search'} className='list-group-item list-group-item-action'>
+                                                        Więcej filmów.
+                                                    </Link>
                                                 </div>
-                                                <hr/>
-                                                <p className='mt-3'>
-                                                    Pomóż innym wybrać film na wieczór
-                                                </p>
-                                                <Link className='btn btn-primary mt-2' to={`/checkout/${shelfCurrentLoan.movie.id}`}>
-                                                    Zostaw recenzje
-                                                </Link>
                                             </div>
+                                            <hr/>
+                                            <p className='mt-3'>
+                                                Pomóż innym wybrać film na wieczór
+                                            </p>
+                                            <MyFunctionnalComponent movieId={shelfCurrentLoan.movie.id} mobile={true}/>
+
                                         </div>
+                                    </div>
                                     <hr/>
                                     <LoansModal shelfCurrentLoan={shelfCurrentLoan} mobile={true} returnMovie={returnMovie} renewLoan={renewLoan}/>
 
@@ -275,10 +353,11 @@ export const Loans = () => {
                             </Link>
                         </>
                     }
+                </div>
             </div>
         </div>
-        </div>
     );
+
 
 
 }
