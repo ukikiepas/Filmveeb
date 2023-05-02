@@ -24,20 +24,23 @@ export const CheckoutAndReviewBox: React.FC<{ movie: MovieModel | undefined, mob
     }
 
     function reviewRender(){
-        if(props.isAuthenticated && !props.isReviewLeft){
+        if(props.isAuthenticated.isAuthenticated && !props.isReviewLeft){
             return(
                 <div>
                 <LeaveAReview submitReview={props.submitReview} isRevieved={false}  updateReview={props.updateReview} reviewLeftStars={props.reviewLeftStars}/>
                 </div>
             )
-        }else if(props.isAuthenticated && props.isReviewLeft){
+        }else if(props.isAuthenticated.isAuthenticated && props.isReviewLeft){
             return (
                 <div>
                 <LeaveAReview submitReview={props.submitReview} isRevieved={true} updateReview={props.updateReview} reviewLeftStars={props.reviewLeftStars}/>
                 </div>
             )
         }else {
-            return (<div></div>)
+            return (
+                <div>
+
+                </div>)
         }
     }
 
@@ -72,9 +75,17 @@ export const CheckoutAndReviewBox: React.FC<{ movie: MovieModel | undefined, mob
                 </div>
                 {buttonRender()}
                 <hr />
-                <p className='mt-3'>
-                    Liczba filmów może się zmienić do momentu złożenia zamówienia
-                </p>
+                {
+                    props.isAuthenticated.isAuthenticated ?
+                    <p className='mt-3'>
+                        Liczba filmów może się zmienić do momentu złożenia zamówienia
+                    </p>
+                        :
+                        <p className='mt-3 text-danger'>
+                            <strong>Zaloguj się aby napisać opinię </strong>
+                        </p>
+                }
+
                 {reviewRender()}
             </div>
         </div>
