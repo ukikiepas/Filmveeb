@@ -10,35 +10,48 @@ export const PostNewMessage = () => {
     const [question, setQuestion] = useState('');
     const [displayWarning, setDisplayWarning] = useState(false);
     const [displaySuccess, setDisplaySuccess] = useState(false);
+    const [displayWarningLength, setDisplayWarningLength] = useState(false);
+
 
 
     async function submitNewQuestion() {
 
-        const url = `http://localhost:8080/api/messages/secure/add/message`;
-        if(authState?.isAuthenticated && title !== '' && question !== ''){
-            const messageRequestModel: MessageModel = new MessageModel(title, question);
-            const requestOptions = {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(messageRequestModel)
-            };
+        if(question.length <= 10){
+            setDisplayWarningLength(true);
+            setDisplaySuccess(false);
+            setDisplayWarning(false);
+        }else{
+            const url = `http://localhost:8080/api/messages/secure/add/message`;
+            if(authState?.isAuthenticated && title !== '' && question !== ''){
+                const messageRequestModel: MessageModel = new MessageModel(title, question);
+                const requestOptions = {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(messageRequestModel)
+                };
 
-            const submitNewQuestionResponse = await fetch(url, requestOptions);
-            if(!submitNewQuestionResponse.ok){
-                throw new Error("Something went wrong!")
+                const submitNewQuestionResponse = await fetch(url, requestOptions);
+                if(!submitNewQuestionResponse.ok){
+                    throw new Error("Something went wrong!")
+                }
+
+                setTitle('')
+                setQuestion('')
+                setDisplaySuccess(true)
+                setDisplayWarning(false)
+                setDisplayWarningLength(false)
+            } else {
+                setDisplayWarning(true)
+                setDisplaySuccess(false)
+                setDisplayWarningLength(false)
             }
-
-            setTitle('')
-            setQuestion('')
-            setDisplaySuccess(true)
-            setDisplayWarning(false)
-        } else {
-            setDisplayWarning(true)
-            setDisplaySuccess(false)
         }
+
+
+
     }
 
 
@@ -64,6 +77,12 @@ export const PostNewMessage = () => {
                     {displaySuccess &&
                         <div className='alert alert-success' role='alert'>
                             Pytanie wysłane
+                        </div>
+                    }
+
+                    {displayWarningLength &&
+                        <div className='alert alert-danger' role='alert'>
+                            Za krótka treść pytania. Minimum 10 znaków !
                         </div>
                     }
 

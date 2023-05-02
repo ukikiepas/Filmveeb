@@ -20,7 +20,6 @@ public class MovieController {
 
     private MovieService movieService;
 
-    @Autowired
     public MovieController(MovieService movieService) {
         this.movieService = movieService;
     }

@@ -10,12 +10,17 @@ export default function Carousel(){
     const[isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
+    // do karuzeli zeby ze wszystkich filmow korzystac
+    const[movieNumber, setMovieNumber] = useState(1);
+    const[movieNumber2, setMovieNumber2] = useState(4);
+    const[determineWhichCarousel, setDetermineWhichCarousel] = useState(false);
+
     useEffect(() => {
 
         const fetchMovies = async () => {
-            const baseUrl: string = "http://localhost:8080/api/movies";
 
-            const url: string = `${baseUrl}?page=0&size=9`;
+
+            const url: string = `http://localhost:8080/api/movies`;
 
             const response = await fetch(url);
 
@@ -52,6 +57,37 @@ export default function Carousel(){
         })
     }, []);
 
+    function getMovieNumForCarousel(){
+        let moviesLength = movies.length -3;
+        let randomNum = Math.floor(Math.random() * moviesLength);
+        console.log("Karuzela nr 1: " + randomNum);
+        setMovieNumber(randomNum);
+    }
+
+    function getMovieNumForCarousel2(){
+        let moviesLength = movies.length -3;
+        let randomNum = Math.floor(Math.random() * moviesLength);
+        console.log("Karuzela nr 2: " + randomNum);
+        setMovieNumber2(randomNum);
+    }
+
+    function onClickWraperCarousel(){
+        if(determineWhichCarousel){
+            getMovieNumForCarousel();
+            setDetermineWhichCarousel(!determineWhichCarousel);
+        }else {
+            getMovieNumForCarousel2();
+            setDetermineWhichCarousel(!determineWhichCarousel);
+        }
+    }
+
+
+
+
+
+
+
+
 
     if(isLoading){
         return (
@@ -70,56 +106,72 @@ export default function Carousel(){
 
 
 
+
+
+
     return (
         <div className='container mt-5' style={{ height: 550 }}>
             <div className='homepage-carousel-title'>
                 <h3>Co dziś obejrzysz?</h3>
             </div>
             <div id='carouselExampleControls' className='carousel carousel-dark slide mt-5
-                d-none d-lg-block' data-bs-interval='false'>
+                d-none d-lg-block' data-bs-interval='true'>
 
-                {/* Desktop */}
+                {/*Desktop*/}
                 <div className='carousel-inner'>
                     <div className='carousel-item active'>
                         <div className='row d-flex justify-content-center align-items-center'>
-                            {movies.slice(0, 3).map(movie => (
-                                <ReturnMovie movie={movie} key ={movie.id} />
-                            ))}
+                                <ReturnMovie movie={movies[movieNumber]} key ={movies[movieNumber].id} />
+                                <ReturnMovie movie={movies[movieNumber +1]} key ={movies[movieNumber +1].id} />
+                                <ReturnMovie movie={movies[movieNumber +2]} key ={movies[movieNumber +2].id} />
                         </div>
                     </div>
                     <div className='carousel-item'>
                         <div className='row d-flex justify-content-center align-items-center'>
-                            {movies.slice(3, 6).map(movie => (
-                                <ReturnMovie movie={movie} key ={movie.id} />
-                            ))}
+                            <ReturnMovie movie={movies[movieNumber2]} key ={movies[movieNumber2].id} />
+                            <ReturnMovie movie={movies[movieNumber2 +1]} key ={movies[movieNumber2 +1].id} />
+                            <ReturnMovie movie={movies[movieNumber2 +2]} key ={movies[movieNumber2 +2].id} />
                         </div>
                     </div>
-                    <div className='carousel-item'>
-                        <div className='row d-flex justify-content-center align-items-center'>
-                            {movies.slice(6, 9).map(movie => (
-                                <ReturnMovie movie={movie} key ={movie.id} />
-                            ))}
-                        </div>
-                    </div>
+
                 </div>
                 <button className='carousel-control-prev' type='button'
-                        data-bs-target='#carouselExampleControls' data-bs-slide='prev'>
+                        data-bs-target='#carouselExampleControls' data-bs-slide='prev' onClick={onClickWraperCarousel} >
                     <span className='carousel-control-prev-icon' aria-hidden='true'></span>
                     <span className='visually-hidden'>Poprzedni</span>
                 </button>
                 <button className='carousel-control-next' type='button'
-                        data-bs-target='#carouselExampleControls' data-bs-slide='next'>
+                        data-bs-target='#carouselExampleControls' data-bs-slide='next' onClick={onClickWraperCarousel}>
                     <span className='carousel-control-next-icon' aria-hidden='true'></span>
                     <span className='visually-hidden'>Następny</span>
                 </button>
             </div>
 
-             {/*Mobile */}
-            <div className='d-lg-none mt-3'>
-                <div className='row d-flex justify-content-center align-items-center'>
-                    <ReturnMovie movie={movies[7]} key={movies[7].id}/>
+
+
+            {/*Mobile */}
+            <div className='carousel carousel-dark slide d-lg-none mt-3' id='carouselExampleControlsMobile' data-bs-ride='carousel'>
+                <div className='carousel-inner'>
+                    {movies.slice(0, movies.length).map((movie, index) => (
+                        <div className={`carousel-item${index === 0 ? ' active' : ''}`} key={movie.id}>
+                            <div className='row d-flex justify-content-center align-items-center'>
+                                <ReturnMovie movie={movie} key={movie.id}/>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <div className='row d-flex justify-content-center align-items-center mt-3'>
+                    <button className='carousel-control-prev' type='button' data-bs-target='#carouselExampleControlsMobile' data-bs-slide='prev' >
+                        <span className='carousel-control-prev-icon' aria-hidden='true'></span>
+                        <span className='visually-hidden'>Poprzedni</span>
+                    </button>
+                    <button className='carousel-control-next' type='button' data-bs-target='#carouselExampleControlsMobile' data-bs-slide='next' >
+                        <span className='carousel-control-next-icon' aria-hidden='true'></span>
+                        <span className='visually-hidden'>Następny</span>
+                    </button>
                 </div>
             </div>
+
 
 
             <div className='homepage-carousel-title mt-3'>

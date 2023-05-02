@@ -391,7 +391,7 @@ export default function MovieCheckoutPage() {
                         <h2>{movie?.title}</h2>
                         <h5>{movie?.director}</h5>
                         <p>{movie?.description}</p>
-                        <StarsReview rating={2.5} size={32} />
+                        <StarsReview rating={totalStars} size={32} />
                     </div>
                 </div>
                 <CheckoutAndReviewBox movie={movie} mobile={true} currentLoansCount={currentLoansCount} isAuthenticated={authState}

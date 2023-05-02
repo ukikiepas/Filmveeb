@@ -7,7 +7,7 @@ export const ReturnMovie: React.FC<{movie: MovieModel}> = (props) => {
 
 
     return (
-        <div className='col-xs-6 col-sm-6 col-md-4 col-lg-3 mb-3'>
+        <div className='col-xs-6 col-sm-6 col-md-4 col-lg-3 mb-3 '>
             <div className='text-center'>
                 {props.movie.img ?
                     <img
@@ -26,7 +26,7 @@ export const ReturnMovie: React.FC<{movie: MovieModel}> = (props) => {
                 }
                 <h6 className='mt-2'>{props.movie.title}</h6>
                 <p>{props.movie.director}</p>
-                <Link className='btn main-color text-white' to={`/checkout/${props.movie.id}`} >Zarezerwuj</Link>
+                <Link className='btn main-color text-white' to={`/checkout/${props.movie.id}`} >Sprawdź</Link>
             </div>
         </div>
     );
