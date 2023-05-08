@@ -10,6 +10,7 @@ import {LatestReviews} from "./LatestReviews";
 import {useOktaAuth} from "@okta/okta-react";
 import reviewRequestModel from "../../models/ReviewRequestModel";
 import ReviewRequestModel from "../../models/ReviewRequestModel";
+import {Link} from "react-router-dom";
 
 export default function MovieCheckoutPage() {
 
@@ -29,6 +30,11 @@ export default function MovieCheckoutPage() {
     const [isReviewChanged, setIsReviewChanged] = useState(false);
     const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
     const [reviewLeftStars, setReviewLeftStars] = useState<number>(0);
+
+
+    //favourited state
+    const [isMovieFavourited, setIsMovieFavourited] = useState(false);
+    const [changeMovieFav, setChangeMovieFav] = useState(false);
 
     //Wypozyczenia -> staty do wypozyczen
     const [currentLoansCount, setCurrentLoansCount] = useState(0);
@@ -235,6 +241,40 @@ export default function MovieCheckoutPage() {
 
     }, [authState])
 
+    // useEffect do okreslania czy dany uzytkownik ma ten film dodany do ulubionych
+    useEffect(() => {
+
+        const fetchIsMovieFavourited = async () => {
+
+            if(authState && authState.isAuthenticated){
+                //tutaj przygotowuje dane do zapytania
+                const url = `http://localhost:8080/api/favourite/secure/isFavourited?movieId=${movieId}`;
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        //tutaj ogarniam sobie token z aktualnego statu zebym mogl przekazac go do zapytania
+                        //bo jest zabezpieczone i inaczej nie przejdzie
+                        Authorization: `Bearer ${authState.accessToken?.accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                };
+
+                const movieFavourited = await fetch(url, requestOptions);
+                if(!movieFavourited.ok){
+                    throw new Error('Something went wrong!');
+                }
+                const moviesCheckedOUtResponseJson = await movieFavourited.json();
+                setIsMovieFavourited(moviesCheckedOUtResponseJson);
+            }
+            setIsLoadingMovieCheckout(false);
+        }
+        fetchIsMovieFavourited().catch((error:any ) =>{
+            setIsLoadingMovieCheckout(false);
+            setHttpError(error.message);
+        })
+
+    }, [authState, changeMovieFav])
+
 
     //---------------------------------------------------------------------------
 
@@ -332,6 +372,50 @@ export default function MovieCheckoutPage() {
         setReviewLeftStars(returnResponseJson)
     }
 
+    //do wyslania dodania do ulubionych do bazy danych
+    async function submitFavourited(){
+
+        let movieId: number = 0;
+        if(movie?.id){
+            movieId = movie.id;
+        }
+
+        const url = `http://localhost:8080/api/favourite/secure/postFavourited?movieId=${movieId}`;
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        const returnResponse = await fetch(url, requestOptions);
+        if(!returnResponse.ok){
+            throw new Error("Something went wrong!!");
+        }
+        setChangeMovieFav(!changeMovieFav);
+    }
+
+    async function deleteFavourited(){
+
+        let movieId: number = 0;
+        if(movie?.id){
+            movieId = movie.id;
+        }
+
+        const url = `http://localhost:8080/api/favourite/secure/deleteFavourited?movieId=${movieId}`;
+        const requestOptions = {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        const returnResponse = await fetch(url, requestOptions);
+        if(!returnResponse.ok){
+            throw new Error("Something went wrong!!");
+        }
+        setChangeMovieFav(!changeMovieFav);
+    }
 
 
     if (isLoading || isLoadingReview || isLoadingCurrentLoansCount || isLoadingMovieCheckout || isLoadingUserReview) {
@@ -346,6 +430,26 @@ export default function MovieCheckoutPage() {
                 <p>{httpError}</p>
             </div>
         )
+    }
+
+
+    // render buttonu do ulubionych ! :3
+    function buttonFavouriteRender(){
+        if(authState?.isAuthenticated){
+            return (
+                <div>
+                    {
+                        isMovieFavourited?
+                            <button onClick={deleteFavourited} className='btn btn-outline-danger btn-sm '>Usuń z ulubionych</button>
+                            :
+                            <button onClick={submitFavourited} className='btn btn-outline-success btn-sm '>Dodaj do ulubionych</button>
+                    }
+                </div>
+
+            )
+        }else {
+            return (<Link to={'/login'} className='btn btn-outline-success btn-sm'>Zaloguj sie aby dodać do ulubionych</Link>)
+        }
     }
 
     return (
@@ -366,10 +470,11 @@ export default function MovieCheckoutPage() {
                             <h5 className='text-primary'>{movie?.director}</h5>
                             <p className='lead'>{movie?.description}</p>
                             <StarsReview rating={totalStars} size={32}/>
+                            {buttonFavouriteRender()}
                         </div>
                     </div>
                     <CheckoutAndReviewBox movie={movie} mobile={false} currentLoansCount={currentLoansCount} isAuthenticated={authState}
-                                          isCheckedOut={isCheckedOut} checkoutMovie={checkoutMovie} isReviewLeft={isReviewLeft} submitReview={submitReview} updateReview={updateReview} reviewLeftStars={reviewLeftStars}/>
+                                          isCheckedOut={isCheckedOut} checkoutMovie={checkoutMovie} isReviewLeft={isReviewLeft} submitReview={submitReview} updateReview={updateReview} reviewLeftStars={reviewLeftStars} isMovieFavourited={isMovieFavourited}/>
                 </div>
                 <hr />
                 <LatestReviews reviews={reviews} movieId={movie?.id} mobile={false} />
@@ -392,10 +497,11 @@ export default function MovieCheckoutPage() {
                         <h5>{movie?.director}</h5>
                         <p>{movie?.description}</p>
                         <StarsReview rating={totalStars} size={32} />
+                        {buttonFavouriteRender()}
                     </div>
                 </div>
                 <CheckoutAndReviewBox movie={movie} mobile={true} currentLoansCount={currentLoansCount} isAuthenticated={authState}
-                                      isCheckedOut={isCheckedOut} checkoutMovie={checkoutMovie} isReviewLeft={isReviewLeft} submitReview={submitReview} updateReview={updateReview} reviewLeftStars={reviewLeftStars}/>
+                                      isCheckedOut={isCheckedOut} checkoutMovie={checkoutMovie} isReviewLeft={isReviewLeft} submitReview={submitReview} updateReview={updateReview} reviewLeftStars={reviewLeftStars} isMovieFavourited={isMovieFavourited}/>
                 <hr/>
                 <LatestReviews reviews={reviews} movieId={movie?.id} mobile={true}/>
             </div>

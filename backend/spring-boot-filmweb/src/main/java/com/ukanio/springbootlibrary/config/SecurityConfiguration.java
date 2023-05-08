@@ -26,7 +26,8 @@ public class SecurityConfiguration {
                     .antMatchers("/api/movies/secure/**",
                             "/api/reviews/secure/**",
                             "/api/messages/secure/**",
-                            "/api/admin/secure/**")
+                            "/api/admin/secure/**",
+                            "/api/favourite/secure/**")
                     .authenticated())
                 .oauth2ResourceServer()
                 .jwt();

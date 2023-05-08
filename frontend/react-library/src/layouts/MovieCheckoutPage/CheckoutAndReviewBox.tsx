@@ -4,24 +4,35 @@ import {LeaveAReview} from "../utils/LeaveAReview";
 
 export const CheckoutAndReviewBox: React.FC<{ movie: MovieModel | undefined, mobile: boolean,
         currentLoansCount: number, isAuthenticated: any, isCheckedOut: boolean
-        checkoutMovie: any, isReviewLeft: boolean, submitReview: any, updateReview:any, reviewLeftStars:number}> = (props) => {
+        checkoutMovie: any, isReviewLeft: boolean, submitReview: any, updateReview:any, reviewLeftStars:number,
+        isMovieFavourited:boolean
+        }> = (props) => {
 
     // logika do tego jaki wysweitlic baton w naszym boxie
     // w zaleznosci od czy zalogowany / czy moze wypozyczc film / czy juz ja wypozyczyl
-    function buttonRender(){
+    function buttonCheckoutRender(){
         if(props.isAuthenticated.isAuthenticated){
             if(!props.isCheckedOut && props.currentLoansCount < 5) {
-                return(<button onClick={() => props.checkoutMovie()} className='btn btn-success btn-lg'>Wypożycz</button>)
+                return(
+                    <div className='text-lg-start'>
+                        <button onClick={() => props.checkoutMovie()} className='btn btn-success btn-lg'>Wypożycz</button>
+                    </div>
+                )
             }else if(props.isCheckedOut) {
-                return (<div><p><b>Film wypożyczony</b></p>
-                    <p><b>Miłego oglądania !</b></p></div>)
+                return (
+                    <div>
+                        <p><b>Film wypożyczony</b></p>
+                    </div>
+                )
             }else if(!props.isCheckedOut) {
                 return (<p className='text-danger'>Zbyt wiele wypożyczonych filmów</p>)
             }
         }else {
-            return (<Link to={'/login'} className='btn btn-success btn-lg'>Zaloguj sie</Link>)
+            return (<Link to={'/login'} className='btn btn-success '>Zaloguj sie</Link>)
         }
     }
+
+
 
     function reviewRender(){
         if(props.isAuthenticated.isAuthenticated && !props.isReviewLeft){
@@ -47,7 +58,7 @@ export const CheckoutAndReviewBox: React.FC<{ movie: MovieModel | undefined, mob
     return (
         <div className={props.mobile ? 'card d-flex mt-5' : 'card col-3 container d-flex mb-5'}>
             <div className='card-body container'>
-                <div className='mt-3'>
+                <div className='mt-2'>
                     <p>
                         <b>{props.currentLoansCount} /5 </b>
                         filmów wypożyczonych
@@ -73,7 +84,7 @@ export const CheckoutAndReviewBox: React.FC<{ movie: MovieModel | undefined, mob
                         </p>
                     </div>
                 </div>
-                {buttonRender()}
+                {buttonCheckoutRender()}
                 <hr />
                 {
                     props.isAuthenticated.isAuthenticated ?

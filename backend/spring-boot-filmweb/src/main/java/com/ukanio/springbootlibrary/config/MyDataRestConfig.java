@@ -1,6 +1,7 @@
 package com.ukanio.springbootlibrary.config;
 
 
+import com.ukanio.springbootlibrary.entity.Favourite;
 import com.ukanio.springbootlibrary.entity.Message;
 import com.ukanio.springbootlibrary.entity.Movie;
 import com.ukanio.springbootlibrary.entity.Review;
@@ -43,10 +44,12 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
                 config.exposeIdsFor(Movie.class);
                 config.exposeIdsFor(Review.class);
                 config.exposeIdsFor(Message.class);
+                config.exposeIdsFor(Favourite.class);
 
                 disableHttpMethods(Movie.class, config, theUnsupportedActions);
                 disableHttpMethods(Review.class, config, theUnsupportedActions);
                 disableHttpMethods(Message.class, config, theUnsupportedActions);
+                disableHttpMethods(Favourite.class, config, theUnsupportedActions);
 
                 /* Configure CORS Mapping*/
                 corsRegistry.addMapping(config.getBasePath() + "/**")
