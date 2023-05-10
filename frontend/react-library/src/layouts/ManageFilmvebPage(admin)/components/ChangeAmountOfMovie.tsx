@@ -22,7 +22,7 @@ export const ChangeAmountOfMovie: React.FC<{movie: MovieModel, deleteBook: any}>
 
     // funkcja do zwiekszania ilosci ksiazek
     async function increaseQuantity(){
-        const url = `http://localhost:8080/api/admin/secure/increase/movie/quantity?movieId=${props.movie?.id}`
+        const url = `${process.env.REACT_APP_API}/admin/secure/increase/movie/quantity?movieId=${props.movie?.id}`
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -45,7 +45,7 @@ export const ChangeAmountOfMovie: React.FC<{movie: MovieModel, deleteBook: any}>
     // funkcja do zmniejszania ilosci ksiazek
 
     async function decreaseQuantity(){
-        const url = `http://localhost:8080/api/admin/secure/decrease/movie/quantity?movieId=${props.movie?.id}`
+        const url = `${process.env.REACT_APP_API}/admin/secure/decrease/movie/quantity?movieId=${props.movie?.id}`
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -66,7 +66,7 @@ export const ChangeAmountOfMovie: React.FC<{movie: MovieModel, deleteBook: any}>
     }
 
     async function deleteBook(){
-        const url = `http://localhost:8080/api/admin/secure/delete/movie/?movieId=${props.movie?.id}`
+        const url = `${process.env.REACT_APP_API}/admin/secure/delete/movie/?movieId=${props.movie?.id}`
         const requestOptions = {
             method: 'DELETE',
             headers: {

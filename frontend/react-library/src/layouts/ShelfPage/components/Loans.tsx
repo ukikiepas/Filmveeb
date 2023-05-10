@@ -32,7 +32,7 @@ export const Loans = () => {
         const fetchUserCurrentLoans = async () => {
 
             if(authState && authState.isAuthenticated){
-                const url = `http://localhost:8080/api/movies/secure/currentloans`;
+                const url = `${process.env.REACT_APP_API}/movies/secure/currentloans`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -97,7 +97,7 @@ export const Loans = () => {
 
     //funkcja do zwaracania filmow
     async function returnMovie(movieId: number){
-        const url = `http://localhost:8080/api/movies/secure/return/?movieId=${movieId}`;
+        const url = `${process.env.REACT_APP_API}/movies/secure/return/?movieId=${movieId}`;
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -117,7 +117,7 @@ export const Loans = () => {
 
     // do odnawiania na 7 dni
     async function renewLoan(movieId: number){
-        const url = `http://localhost:8080/api/movies/secure/renew/loan/?movieId=${movieId}`;
+        const url = `${process.env.REACT_APP_API}/movies/secure/renew/loan/?movieId=${movieId}`;
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -136,7 +136,7 @@ export const Loans = () => {
 
     //do sprawdzenia czy dany user juz dał opinie
     async function checkIfRevieved(movieId: number){
-        const url = `http://localhost:8080/api/reviews/secure/user/movie/?movieId=${movieId}`;
+        const url = `${process.env.REACT_APP_API}/reviews/secure/user/movie/?movieId=${movieId}`;
         const requestOptions = {
             method: 'GET',
             headers: {

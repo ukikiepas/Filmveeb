@@ -32,11 +32,11 @@ export default function SearchMoviesPage(){
     //Do pobierania wszystkich filmow z bazy
     useEffect(() => {
         const fetchMovies = async () => {
-            const baseUrl: string = "http://localhost:8080/api/movies";
+            const baseUrl: string = `${process.env.REACT_APP_API}/movies`;
             let url: string = ``;
 
             if(onlyFavourited){
-                url = `http://localhost:8080/api/movies`
+                url = `${process.env.REACT_APP_API}/movies`
             }else {
                 if(searchUrl ===``){
                     url = `${baseUrl}?page=${currentPage - 1}&size=${moviesPerPage}`
@@ -47,6 +47,7 @@ export default function SearchMoviesPage(){
             }
 
 
+            console.log(url);
             const response = await fetch(url);
 
             if (!response.ok) {
@@ -102,7 +103,7 @@ export default function SearchMoviesPage(){
     }, [currentPage, searchUrl, onlyFavourited, categorySelection]);
 
     async function getIdsOfFavourited(){
-        const url =`http://localhost:8080/api/favourite/secure/getFavourites`;
+        const url =`${process.env.REACT_APP_API}/favourite/secure/getFavourites`;
         const requestOptions = {
             method: 'GET',
             headers: {

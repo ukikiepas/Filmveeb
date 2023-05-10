@@ -20,7 +20,7 @@ export const ChangeAmountOfMovies = () => {
     //Do pobierania wszystkich filmow z bazy
     useEffect(() => {
         const fetchMovies = async () => {
-            const baseUrl: string = `http://localhost:8080/api/movies?page=${currentPage - 1}&size=${moviesPerPage}`;
+            const baseUrl: string = `${process.env.REACT_APP_API}/movies?page=${currentPage - 1}&size=${moviesPerPage}`;
 
             const response = await fetch(baseUrl);
 

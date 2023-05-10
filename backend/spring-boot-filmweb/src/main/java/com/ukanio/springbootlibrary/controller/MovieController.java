@@ -13,7 +13,7 @@ import java.util.List;
 
 // ta adnotacja robi to, że sie nie wypierdoli nam jak bedziemy chcieli z innego zrodla niz 8080 zapytać.
 // (bo to poblokowane domyslnie jest w config -> MyDataRestConfig.
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://localhost:3000")
 @RestController
 @RequestMapping("/api/movies")
 public class MovieController {

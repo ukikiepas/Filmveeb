@@ -17,7 +17,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
 
     /*to sa metody ktore przekazujemy nizej do naszej nadpisanej metody */
-    private String theAllowedOrigins = "http://localhost:3000";
+    private String theAllowedOrigins = "https://localhost:3000";
 
     private void disableHttpMethods(Class theClass, RepositoryRestConfiguration config, HttpMethod[] theUnsupportedActions){
 

@@ -54,7 +54,7 @@ export default function MovieCheckoutPage() {
     // use Effect do wczytywania filmu
     useEffect(() => {
         const fetchMovie = async () => {
-            const baseUrl: string = `http://localhost:8080/api/movies/${movieId}`;
+            const baseUrl: string = `${process.env.REACT_APP_API}/movies/${movieId}`;
 
             const response = await fetch(baseUrl);
 
@@ -92,7 +92,7 @@ export default function MovieCheckoutPage() {
 
         const fetchMovieReview = async () =>{
 
-            const reviewUrl: string  = `http://localhost:8080/api/reviews/search/findByMovieId?movieId=${movieId}`;
+            const reviewUrl: string  = `${process.env.REACT_APP_API}/reviews/search/findByMovieId?movieId=${movieId}`;
 
             const responseReviews = await fetch(reviewUrl);
 
@@ -149,7 +149,7 @@ export default function MovieCheckoutPage() {
             if(authState && authState.isAuthenticated) {
 
                 //tutaj przygotowuje dane do zapytania
-                const url = `http://localhost:8080/api/reviews/secure/user/movie/?movieId=${movieId}`;
+                const url = `${process.env.REACT_APP_API}/reviews/secure/user/movie/?movieId=${movieId}`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -181,7 +181,7 @@ export default function MovieCheckoutPage() {
             if(authState && authState.isAuthenticated){
 
                 //tutaj przygotowuje dane do zapytania
-                const url = `http://localhost:8080/api/movies/secure/currentloans/count`;
+                const url = `${process.env.REACT_APP_API}/movies/secure/currentloans/count`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -214,7 +214,7 @@ export default function MovieCheckoutPage() {
 
             if(authState && authState.isAuthenticated){
                 //tutaj przygotowuje dane do zapytania
-                const url = `http://localhost:8080/api/movies/secure/ischeckedout/byuser/?movieId=${movieId}`;
+                const url = `${process.env.REACT_APP_API}/movies/secure/ischeckedout/byuser/?movieId=${movieId}`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -248,7 +248,7 @@ export default function MovieCheckoutPage() {
 
             if(authState && authState.isAuthenticated){
                 //tutaj przygotowuje dane do zapytania
-                const url = `http://localhost:8080/api/favourite/secure/isFavourited?movieId=${movieId}`;
+                const url = `${process.env.REACT_APP_API}/favourite/secure/isFavourited?movieId=${movieId}`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {
@@ -279,7 +279,7 @@ export default function MovieCheckoutPage() {
     //---------------------------------------------------------------------------
 
     async function checkoutMovie(){
-        const url = `http://localhost:8080/api/movies/secure/checkout/?movieId=${movie?.id}`;
+        const url = `${process.env.REACT_APP_API}/movies/secure/checkout/?movieId=${movie?.id}`;
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -308,7 +308,7 @@ export default function MovieCheckoutPage() {
         }
 
         const reviewRequestModel = new ReviewRequestModel(starInput, movieId, reviewDescription);
-        const url = `http://localhost:8080/api/reviews/secure`;
+        const url = `${process.env.REACT_APP_API}/reviews/secure`;
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -336,7 +336,7 @@ export default function MovieCheckoutPage() {
         }
 
         const reviewRequestModel = new ReviewRequestModel(starInput, movieId, reviewDescription);
-        const url = `http://localhost:8080/api/reviews/secure/user/updateReview`;
+        const url = `${process.env.REACT_APP_API}/reviews/secure/user/updateReview`;
         const requestOptions = {
             method: 'PUT',
             headers: {
@@ -356,7 +356,7 @@ export default function MovieCheckoutPage() {
 
     // do wzieca punktow gwiazdek konkretnego uzytkownika pod konkretnym filmem
     async function getMovieRatingByUser(){
-        const url = `http://localhost:8080/api/reviews/secure/user/movie/rating/?movieId=${movieId}`;
+        const url = `${process.env.REACT_APP_API}/reviews/secure/user/movie/rating/?movieId=${movieId}`;
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -380,7 +380,7 @@ export default function MovieCheckoutPage() {
             movieId = movie.id;
         }
 
-        const url = `http://localhost:8080/api/favourite/secure/postFavourited?movieId=${movieId}`;
+        const url = `${process.env.REACT_APP_API}/favourite/secure/postFavourited?movieId=${movieId}`;
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -402,7 +402,7 @@ export default function MovieCheckoutPage() {
             movieId = movie.id;
         }
 
-        const url = `http://localhost:8080/api/favourite/secure/deleteFavourited?movieId=${movieId}`;
+        const url = `${process.env.REACT_APP_API}/favourite/secure/deleteFavourited?movieId=${movieId}`;
         const requestOptions = {
             method: 'DELETE',
             headers: {

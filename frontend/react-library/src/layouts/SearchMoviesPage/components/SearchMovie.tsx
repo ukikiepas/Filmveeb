@@ -20,7 +20,7 @@ export const SearchMovie: React.FC<{ movie: MovieModel }> = (props) => {
         const fetchIsMovieFavourited = async () => {
 
             if(authState && authState.isAuthenticated){
-                const url = `http://localhost:8080/api/favourite/secure/isFavourited?movieId=${props.movie.id}`;
+                const url = `${process.env.REACT_APP_API}/favourite/secure/isFavourited?movieId=${props.movie.id}`;
                 const requestOptions = {
                     method: 'GET',
                     headers: {

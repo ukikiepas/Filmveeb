@@ -8,7 +8,7 @@ import java.lang.Exception;
 
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("https://localhost:3000")
 @RequestMapping("/api/admin")
 public class AdminController {
 

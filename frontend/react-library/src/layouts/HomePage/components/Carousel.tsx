@@ -20,7 +20,7 @@ export default function Carousel(){
         const fetchMovies = async () => {
 
 
-            const url: string = `http://localhost:8080/api/movies`;
+            const url: string = `${process.env.REACT_APP_API}/movies`;
 
             const response = await fetch(url);
 
