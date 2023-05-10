@@ -4,7 +4,6 @@ import SpinnerLoading from "../utils/SpinnerLoading";
 import {SearchMovie} from "./components/SearchMovie";
 import {Pagination} from "../utils/Pagination";
 import {Link} from "react-router-dom";
-import {ButtonGroup, ToggleButton} from "react-bootstrap";
 import {useOktaAuth} from "@okta/okta-react";
 
 
@@ -22,6 +21,7 @@ export default function SearchMoviesPage(){
     const [totalPages, setTotalPages] = useState(0);
     const [search, setSearch] = useState('');
     const [searchUrl, setSearchUrl] = useState('');
+    // const [searchUrlFav, setSearchUrlFav] = useState(``);
     const [categorySelection, setCategorySelection] = useState('Gatunek filmu');
 
 
@@ -33,15 +33,19 @@ export default function SearchMoviesPage(){
     useEffect(() => {
         const fetchMovies = async () => {
             const baseUrl: string = "http://localhost:8080/api/movies";
-
             let url: string = ``;
 
-            if(searchUrl ===``){
-                url = `${baseUrl}?page=${currentPage - 1}&size=${moviesPerPage}`
+            if(onlyFavourited){
+                url = `http://localhost:8080/api/movies`
             }else {
-                let searchWithPage = searchUrl.replace('<pageNumber', `${currentPage -1}`);
-                url = baseUrl + searchWithPage;
+                if(searchUrl ===``){
+                    url = `${baseUrl}?page=${currentPage - 1}&size=${moviesPerPage}`
+                }else {
+                    let searchWithPage = searchUrl.replace('<pageNumber', `${currentPage -1}`);
+                    url = baseUrl + searchWithPage;
+                }
             }
+
 
             const response = await fetch(url);
 
@@ -73,10 +77,16 @@ export default function SearchMoviesPage(){
 
             if(onlyFavourited){
                 const favouriteIds = await getIdsOfFavourited();
-                const filteredMovies = loadedMovies.filter(movie => favouriteIds.includes(movie.id));
+                let filteredMovies = loadedMovies.filter(movie => favouriteIds.includes(movie.id));
+                if(categorySelection !== 'Gatunek filmu' && categorySelection !== 'Wszystkie'){
+                    filteredMovies = filteredMovies.filter(movie => movie.category === categorySelection.toLowerCase());
+                }
+                if(search !== ''){
+                    filteredMovies = filteredMovies.filter(movie => movie.title.toLowerCase().includes(search.toLowerCase()));
+                }
                 setMovies(filteredMovies);
-                setTotalAmountOfMovies(favouriteIds.length + 1)
-                setTotalPages(setTotalPagesForFavourited(favouriteIds.length + 1))
+                setTotalAmountOfMovies(filteredMovies.length)
+                setTotalPages(setTotalPagesForFavourited(filteredMovies.length + 1))
             }else {
                 setMovies(loadedMovies);
             }
@@ -89,10 +99,10 @@ export default function SearchMoviesPage(){
         //tutaj mowimy zeby po kazdym odnowieniu listy stronka
         // szla nam do punktu 0;0 czyli na gore
         window.scrollTo(0, 0);
-    }, [currentPage, searchUrl, onlyFavourited]);
+    }, [currentPage, searchUrl, onlyFavourited, categorySelection]);
 
     async function getIdsOfFavourited(){
-        const url = `http://localhost:8080/api/favourite/secure/getFavourites`;
+        const url =`http://localhost:8080/api/favourite/secure/getFavourites`;
         const requestOptions = {
             method: 'GET',
             headers: {
@@ -186,6 +196,7 @@ export default function SearchMoviesPage(){
 
                 <div>
 
+
                     <div className='row col-10 mt-5'>
                         <div className='col-6 text-nowrap'>
                             <div className='d-flex '>
@@ -259,14 +270,20 @@ export default function SearchMoviesPage(){
 
 
                     </div>
+
                     {totalAmountOfMovies > 0 ?
                         <>
                             <div className='mt-3'>
-                                <h5>Liczba rezultatów: ({totalAmountOfMovies})</h5>
+                                {onlyFavourited ?
+                                    <h5>Liczba ulubionych filmów: ({totalAmountOfMovies})</h5>
+                                    :
+                                    <h5>Liczba rezultatów: ({totalAmountOfMovies})</h5>
+                                }
                             </div>
-                            <p>
-                                {indexOfFirstMovie + 1} do {lastItem} z {totalAmountOfMovies} filmów:
-                            </p>
+                                {!onlyFavourited &&
+                                    <p>{indexOfFirstMovie + 1} do {lastItem} z {totalAmountOfMovies} filmów:</p>
+                                }
+
                             {movies.map(movie => (
                                 <SearchMovie movie={movie} key={movie.id} />
                             ))}
@@ -282,7 +299,7 @@ export default function SearchMoviesPage(){
                             </Link>
                         </div>
                     }
-                    {totalPages > 1 &&
+                    {totalPages > 1 && !onlyFavourited &&
                         <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate}/>
                     }
 
