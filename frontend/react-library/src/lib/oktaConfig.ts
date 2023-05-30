@@ -4,5 +4,8 @@ export const oktaConfig = {
     redirectUri: 'https://localhost:3000/login/callback',
     scopes: ['openid', 'profile', 'email'],
     pkce: true,
-    disableHttpsCheck: true
+    disableHttpsCheck: true,
+    idps: [
+        { type: 'google', id: '0oa9rehilz0qlz4eH5d7' }
+    ]
 }
