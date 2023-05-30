@@ -47,6 +47,10 @@ export default function MovieCheckoutPage() {
     const movieId = (window.location.pathname).split('/')[2];
 
 
+    //do platnosci !
+    const [displayError, setDisplayError] = useState(false);
+
+
 
 
 
@@ -292,8 +296,10 @@ export default function MovieCheckoutPage() {
 
         const checkoutResponse = await fetch(url, requestOptions);
         if(!checkoutResponse.ok){
+            setDisplayError(true);
             throw new Error('Something went wrong!');
         }
+        setDisplayError(false);
         setIsCheckedOut(true);
 
     }
@@ -455,6 +461,10 @@ export default function MovieCheckoutPage() {
     return (
         <div>
             <div className='container d-none d-lg-block'>
+                {displayError && <div className='alert alert-danger mt-3' role='alert'>
+                    Najpierw opłać swoje zaległości i/lub zwróć zaległe filmy!
+                    </div>
+                }
                 <div className='row mt-5'>
                     <div className='col-sm-2 col-md-2'>
                         {movie?.img ?
@@ -483,6 +493,10 @@ export default function MovieCheckoutPage() {
 
             {/*MOBILKI !!!*/}
             <div className='container d-lg-none mt-5'>
+                {displayError && <div className='alert alert-danger mt-3' role='alert'>
+                    Najpierw opłać swoje zaległości i/lub zwróć zaległe filmy!
+                </div>
+                }
                 <div className='d-flex justify-content-center align-items-center'>
                     {movie?.img ?
                         <img src={movie?.img} width='226' height='349' alt='Movie' />

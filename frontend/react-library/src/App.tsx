@@ -14,6 +14,7 @@ import {ReviewListPage} from "./layouts/MovieCheckoutPage/ReviewListPage/ReviewL
 import {ShelfPage} from "./layouts/ShelfPage/ShelfPage";
 import {MessagesPage} from "./layouts/MessagesPage/MessagesPage";
 import {ManageFilmvebPage} from "./layouts/ManageFilmvebPage(admin)/ManageFilmvebPage";
+import {PaymentPage} from "./layouts/PaymentPage/PaymentPage";
 
 
 const oktaAuth = new OktaAuth(oktaConfig);
@@ -68,6 +69,10 @@ function App() {
 
                 <SecureRoute path='/admin'>
                     <ManageFilmvebPage/>
+                </SecureRoute>
+
+                <SecureRoute path='/fees'>
+                    <PaymentPage/>
                 </SecureRoute>
 
                 <Route path='/login' render={

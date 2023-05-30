@@ -4,9 +4,11 @@ package com.ukanio.springbootlibrary.service;
 import com.ukanio.springbootlibrary.dao.CheckoutRepository;
 import com.ukanio.springbootlibrary.dao.HistoryRepository;
 import com.ukanio.springbootlibrary.dao.MovieRepository;
+import com.ukanio.springbootlibrary.dao.PaymentRepository;
 import com.ukanio.springbootlibrary.entity.Checkout;
 import com.ukanio.springbootlibrary.entity.History;
 import com.ukanio.springbootlibrary.entity.Movie;
+import com.ukanio.springbootlibrary.entity.Payment;
 import com.ukanio.springbootlibrary.responsemodels.ShelfCurrentLoansResponse;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -37,10 +39,13 @@ public class MovieService {
 
     private HistoryRepository historyRepository;
 
-    public MovieService(MovieRepository movieRepository, CheckoutRepository checkoutRepository, HistoryRepository historyRepository) {
+    private PaymentRepository paymentRepository;
+
+    public MovieService(MovieRepository movieRepository, CheckoutRepository checkoutRepository, HistoryRepository historyRepository, PaymentRepository paymentRepository) {
         this.movieRepository = movieRepository;
         this.checkoutRepository = checkoutRepository;
         this.historyRepository = historyRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public Movie checkoutMovie(String userEmail, Long movieId) throws Exception {
@@ -52,6 +57,40 @@ public class MovieService {
         if(!movie.isPresent() || validateCheckout != null || movie.get().getCopiesAvailable() <= 0){
             throw new Exception("Nie ma takiego filmu albo juz zajęty ");
         }
+
+        // do platnosci
+        List<Checkout> currentMoviesCheckedOut = checkoutRepository.findMoviesByUserEmail(userEmail);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        boolean movieNeedsReturn = false;
+
+        Date d2 = simpleDateFormat.parse(LocalDate.now().toString());
+        TimeUnit timeUnit = TimeUnit.DAYS;
+        for(Checkout checkout: currentMoviesCheckedOut){
+            Date d1 = simpleDateFormat.parse(checkout.getReturnDate());
+            double differenceInTime = timeUnit.convert(d1.getTime() - d2.getTime(), TimeUnit.MILLISECONDS);
+            if(differenceInTime < 0){
+                movieNeedsReturn = true;
+                break;
+            }
+        }
+
+        Payment userPayment = paymentRepository.findByUserEmail(userEmail);
+
+        if((userPayment != null) && userPayment.getAmount() >0 || (userPayment !=null && movieNeedsReturn)){
+            throw new Exception("Nieoplacony film !!");
+        }
+
+        if(userPayment == null){
+            Payment payment = new Payment();
+            payment.setAmount(00.00);
+            payment.setUserEmail(userEmail);
+            paymentRepository.save(payment);
+        }
+
+        //koniec platnosci ! :)
+
+
+
 
         movie.get().setCopiesAvailable(movie.get().getCopiesAvailable() -1);
         movieRepository.save(movie.get());
@@ -136,6 +175,25 @@ public class MovieService {
         movie.get().setCopiesAvailable(movie.get().getCopiesAvailable() + 1);
 
         movieRepository.save(movie.get());
+
+        // start "opłat za film"
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date d1 = simpleDateFormat.parse(validateCheckout.getReturnDate());
+        Date d2 = simpleDateFormat.parse(LocalDate.now().toString());
+
+        TimeUnit time = TimeUnit.DAYS;
+
+        double differenceInTime = time.convert(d1.getTime() - d2.getTime(), TimeUnit.MILLISECONDS);
+
+        if(differenceInTime < 0){
+            Payment payment = paymentRepository.findByUserEmail(userEmail);
+            payment.setAmount(payment.getAmount() + (differenceInTime * -1));
+            paymentRepository.save(payment);
+        }
+        //koniec oplat
+
+
+
         checkoutRepository.deleteById(validateCheckout.getId());
 
         // od tego momentu tutaj wdupcam zeby było history repo git

@@ -18,6 +18,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 
         //Wylaczam CRS (Cross Site Request Forgery)
+        //bo architektura restapi jest bezstanowa - dlatego wylaczam
         http.csrf().disable();
 
         // zabezpieczam endpointy /api/<cosTam>/secure :)
@@ -32,10 +33,10 @@ public class SecurityConfiguration {
                 .oauth2ResourceServer()
                 .jwt();
 
-        //dodaje CORS filtry
+        //dodaje CORS (Cross-Origin Resource Sharing) filtry -> bo back i front inne adresy
         http.cors();
 
-        // Dodaje
+        // Dodaje stategie negocjacji żądań -> żeby poprawnie było zwrocone w zaleznosci od frontu (klienta)
         http.setSharedObject(ContentNegotiationStrategy.class,
                 new HeaderContentNegotiationStrategy());
 
@@ -43,7 +44,7 @@ public class SecurityConfiguration {
         //zmieniamy domyslna odpowiedz 401 zeby byla lepiej zrozumiala
         Okta.configureResourceServer401ResponseBody(http);
 
-        // dajemy .build bo uzywa Http design patterna builder :>
+        // zwracamy skonfigurowany obiekt SecurityFilterChain
         return http.build();
     }
 

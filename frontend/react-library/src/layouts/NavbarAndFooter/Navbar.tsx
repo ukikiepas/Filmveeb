@@ -58,6 +58,15 @@ export const Navbar = () => {
 
                         }
 
+                        {authState.isAuthenticated &&
+
+                            <li className='nav-item'>
+                                <NavLink className='nav-link' to='/fees'>Opłaty</NavLink>
+                            </li>
+
+                        }
+
+
                         {authState.isAuthenticated && !isAdmin &&
 
                             <li className='nav-item'>

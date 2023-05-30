@@ -14,6 +14,7 @@ public class ExtractJWT {
         //0 -> Header
         //1 -> Payload (tu jest email) :)
         //2 -> Signature
+        //header.payload.signature
         String[] chunks = token.split("\\.");
 
         // dekodujemy

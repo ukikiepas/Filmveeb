@@ -12,13 +12,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 
+//conf REST API (Srping data Rest lib) rozszerzamy RepositoryRestConfigurter
 @Configuration
 public class MyDataRestConfig implements RepositoryRestConfigurer {
 
 
-    /*to sa metody ktore przekazujemy nizej do naszej nadpisanej metody */
     private String theAllowedOrigins = "https://localhost:3000";
 
+    /*to sa metody ktore przekazujemy nizej do naszej nadpisanej metody */
     private void disableHttpMethods(Class theClass, RepositoryRestConfiguration config, HttpMethod[] theUnsupportedActions){
 
         config.getExposureConfiguration()
@@ -29,7 +30,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
     }
 
 
-    /*tutaj w tym miejscu nadpisujemy se metode z dependency Spring Data Rest która odpowiada
+    /*tutaj w tym miejscu nadpisujemy metode z dependency Spring Data Rest która odpowiada
     za ustawienia naszego Resta. */
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config,
@@ -41,6 +42,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
                 HttpMethod.DELETE,
                 HttpMethod.DELETE};
 
+               //dzieki temu indentyfikatory tych encji beda dostepene w rest api
                 config.exposeIdsFor(Movie.class);
                 config.exposeIdsFor(Review.class);
                 config.exposeIdsFor(Message.class);
@@ -51,7 +53,7 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
                 disableHttpMethods(Message.class, config, theUnsupportedActions);
                 disableHttpMethods(Favourite.class, config, theUnsupportedActions);
 
-                /* Configure CORS Mapping*/
+                /* Configure CORS (Cross-origin resource sharing) Mapping*/
                 corsRegistry.addMapping(config.getBasePath() + "/**")
                         .allowedOrigins(theAllowedOrigins);
 
