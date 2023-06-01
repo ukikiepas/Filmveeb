@@ -16,6 +16,9 @@ export const PaymentPage = () => {
     const [fees,setFees] = useState(0);
     const [loadingFees, setLoadingFees] = useState(true);
 
+    //do popupu
+    const [paymentSuccess, setPaymentSuccess] = useState(false);
+
 
 
     useEffect( () => {
@@ -95,6 +98,7 @@ export const PaymentPage = () => {
                 setSubmitDisabled(false);
                 alert('There was an error!')
             }else {
+                setPaymentSuccess(true);
                 const url = `https://localhost:8443/api/payment/secure/payment-complete`;
                 const requestOptions = {
                     method: 'PUT',
@@ -137,6 +141,11 @@ export const PaymentPage = () => {
     return(
 
         <div className='container'>
+            {paymentSuccess &&
+                <div className='alert alert-success mt-3' role='alert'>
+                    Opłacenie zakończone pomyślnie!
+                </div>
+            }
             {fees > 0 && <div className='card mt-3'>
                 <h5 className='card-header'>Do opłacenia: <span className='text-danger'>${fees}</span></h5>
                 <div className='card-body'>
@@ -155,8 +164,10 @@ export const PaymentPage = () => {
                     Zobacz najlepsze filmy
                 </Link>
             </div>
-
             }
+
+
+
             {submitDisabled && <SpinnerLoading/>}
 
         </div>

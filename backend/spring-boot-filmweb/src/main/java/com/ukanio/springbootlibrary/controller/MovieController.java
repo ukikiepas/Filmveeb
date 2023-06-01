@@ -2,6 +2,8 @@ package com.ukanio.springbootlibrary.controller;
 
 
 import com.ukanio.springbootlibrary.entity.Movie;
+import com.ukanio.springbootlibrary.mailing.EmailSenderServiceImpl;
+import com.ukanio.springbootlibrary.mailing.mailingServices.MovieMailingService;
 import com.ukanio.springbootlibrary.responsemodels.ShelfCurrentLoansResponse;
 import com.ukanio.springbootlibrary.service.MovieService;
 import com.ukanio.springbootlibrary.utils.ExtractJWT;
@@ -19,9 +21,14 @@ import java.util.List;
 public class MovieController {
 
     private MovieService movieService;
+    private MovieMailingService movieMailingService;
 
-    public MovieController(MovieService movieService) {
+
+
+    public MovieController(MovieService movieService, MovieMailingService movieMailingService) {
         this.movieService = movieService;
+        this.movieMailingService = movieMailingService;
+
     }
 
 
@@ -50,6 +57,7 @@ public class MovieController {
     @PutMapping("/secure/checkout")
     public Movie checkoutMovie(@RequestParam Long movieId, @RequestHeader(value = "Authorization") String token) throws Exception{
         String userEmail = ExtractJWT.payloadJWTExtraction(token, "\"sub\"");
+        movieMailingService.sendCheckoutConfirmation(userEmail, movieId);
         return movieService.checkoutMovie(userEmail, movieId);
     }
 
@@ -74,6 +82,7 @@ public class MovieController {
     public Long getRandomId(){
         return movieService.getRandomMovieId();
     }
+
 
 
 

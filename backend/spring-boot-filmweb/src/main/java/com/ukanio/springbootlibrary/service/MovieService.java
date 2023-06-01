@@ -9,6 +9,7 @@ import com.ukanio.springbootlibrary.entity.Checkout;
 import com.ukanio.springbootlibrary.entity.History;
 import com.ukanio.springbootlibrary.entity.Movie;
 import com.ukanio.springbootlibrary.entity.Payment;
+import com.ukanio.springbootlibrary.mailing.EmailSenderServiceImpl;
 import com.ukanio.springbootlibrary.responsemodels.ShelfCurrentLoansResponse;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -40,11 +41,13 @@ public class MovieService {
 
     private PaymentRepository paymentRepository;
 
+
     public MovieService(MovieRepository movieRepository, CheckoutRepository checkoutRepository, HistoryRepository historyRepository, PaymentRepository paymentRepository) {
         this.movieRepository = movieRepository;
         this.checkoutRepository = checkoutRepository;
         this.historyRepository = historyRepository;
         this.paymentRepository = paymentRepository;
+
     }
 
     public Movie checkoutMovie(String userEmail, Long movieId) throws Exception {
@@ -272,6 +275,9 @@ public class MovieService {
 
         return currentMovieId;
     }
+
+
+
 
 
 

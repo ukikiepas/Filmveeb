@@ -52,6 +52,12 @@
             <version>22.0.0</version>
         </dependency>
 
+        <!-- Do mailingu ! -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

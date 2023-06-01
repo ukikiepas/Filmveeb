@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     Page<Movie> findByTitleContaining(@RequestParam("title") String title, Pageable pageable);
 
     Page<Movie> findByCategory(@RequestParam("category") String category, Pageable pageable);
+
+
 
 
     @Query("select o from Movie o where id in :movie_ids")
