@@ -20,6 +20,9 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
 
     Page<Movie> findByCategory(@RequestParam("category") String category, Pageable pageable);
 
+    @Query("select o.title from Movie o where id = :id")
+    String findTitleById(@Param("id") Long id);
+
 
 
 

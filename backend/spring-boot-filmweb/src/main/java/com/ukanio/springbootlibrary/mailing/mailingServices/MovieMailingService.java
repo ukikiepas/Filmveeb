@@ -28,20 +28,23 @@ public class MovieMailingService {
         LocalDate currentDate_plus7 = currentDate.plusDays(7);
 
         Optional<Movie> movie = movieRepository.findById(movieId);
-        String subject = "Potwierdzenie wypożyczenia filmu - " + movie.get().getTitle();
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("Cześć " + userEmail + "\n \n");
-        stringBuilder.append("Dziękujemy za skorzystanie z usług naszej firmy. Pamiętaj, że darmowy czas wypożyczenia to 7 dni kalendarzowych, po tym czasie będziesz obciążony opłatą 1$ za każdy dzień zwłoki.\n \n");
-        stringBuilder.append("Szczegóły filmu: \n");
-        stringBuilder.append("Tytuł: " + movie.get().getTitle() + "\n");
-        stringBuilder.append("Data wypożyczenia: " + currentDate + "\n");
-        stringBuilder.append("Data oddania: " + currentDate_plus7 + "\n \n");
-        stringBuilder.append("Pozdrawiamy i życzmy miłego seansu! \n");
-        stringBuilder.append("Zespół Filmveb");
+        if(movie.isPresent()){
+            String subject = "Potwierdzenie wypożyczenia filmu - " + movie.get().getTitle();
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("Cześć " + userEmail + "\n \n");
+            stringBuilder.append("Dziękujemy za skorzystanie z usług naszej firmy. Pamiętaj, że darmowy czas wypożyczenia to 7 dni kalendarzowych, po tym czasie będziesz obciążony opłatą 1$ za każdy dzień zwłoki.\n \n");
+            stringBuilder.append("Szczegóły filmu: \n");
+            stringBuilder.append("Tytuł: " + movie.get().getTitle() + "\n");
+            stringBuilder.append("Data wypożyczenia: " + currentDate + "\n");
+            stringBuilder.append("Data oddania: " + currentDate_plus7 + "\n \n");
+            stringBuilder.append("Pozdrawiamy i życzmy miłego seansu! \n");
+            stringBuilder.append("Zespół Filmveb");
 
-        String textMessage = stringBuilder.toString();
+            String textMessage = stringBuilder.toString();
 
 
-        emailSenderService.sendEmail(userEmail, subject, textMessage);
+            emailSenderService.sendEmail(userEmail, subject, textMessage);
+        }
+
     }
 }
