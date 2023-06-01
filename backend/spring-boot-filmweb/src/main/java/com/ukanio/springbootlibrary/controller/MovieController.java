@@ -69,6 +69,13 @@ public class MovieController {
     }
 
 
+    //edpoint do filmu dnia -> losowe id filmu z bazy
+    @GetMapping("/randomMovieId")
+    public Long getRandomId(){
+        return movieService.getRandomMovieId();
+    }
+
+
 
 
 

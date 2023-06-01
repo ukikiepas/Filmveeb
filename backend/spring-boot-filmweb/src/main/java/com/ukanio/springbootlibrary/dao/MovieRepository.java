@@ -23,4 +23,6 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("select o from Movie o where id in :movie_ids")
     List<Movie> findMoviesByMovieIds(@Param("movie_ids")List<Long> movieId);
 
+
+
 }

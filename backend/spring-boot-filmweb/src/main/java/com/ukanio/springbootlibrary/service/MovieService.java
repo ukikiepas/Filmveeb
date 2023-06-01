@@ -14,11 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -82,6 +81,7 @@ public class MovieService {
 
         if(userPayment == null){
             Payment payment = new Payment();
+            //payment.setId();
             payment.setAmount(00.00);
             payment.setUserEmail(userEmail);
             paymentRepository.save(payment);
@@ -233,6 +233,48 @@ public class MovieService {
         }
 
     }
+
+
+    //logika do zwracania loswego id filmu co 24h :) :)
+
+    private Long currentMovieId;
+    private LocalDateTime lastMovieUpdate;
+
+    private boolean shouldUpdateMovieId() {
+        if (lastMovieUpdate == null) {
+            return true; // Jeśli jeszcze nie ustawiono numeru, należy go zaktualizować
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        return Duration.between(lastMovieUpdate, now).toHours() >= 24;
+    }
+
+    private Long randomMovieId() {
+        long amountOfMovies = movieRepository.count();
+        if (amountOfMovies == 0) {
+            return -1L; // Brak filmów w bazie danych, zwróć odpowiednią wartość
+        }
+
+        Random random = new Random();
+        int range = Math.toIntExact(amountOfMovies);
+        int randomNumber = random.nextInt(range) + 1;
+
+        return (long) randomNumber;
+    }
+
+    public Long getRandomMovieId() {
+        if (shouldUpdateMovieId()) {
+            // Jeśli minęło 24 godziny, zaktualizuj numer filmu dnia
+            currentMovieId = randomMovieId();
+            System.out.println(currentMovieId);
+            lastMovieUpdate = LocalDateTime.now();
+        }
+
+        return currentMovieId;
+    }
+
+
+
 
 }
 

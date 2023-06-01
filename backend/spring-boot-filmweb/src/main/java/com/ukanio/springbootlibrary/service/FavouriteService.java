@@ -33,7 +33,7 @@ public class FavouriteService {
         favourite.setUserEmail(userEmail);
         favourite.setMovieId(movieId);
         Optional<Favourite> optionalFavourite = favouriteRepository.findByMovieId(favourite.getMovieId());
-        if (optionalFavourite.isPresent()) {
+        if (optionalFavourite.isPresent() && optionalFavourite.get().getUserEmail().equals(userEmail)) {
             throw new Exception("There is already favourited movie in database") ;
         } else {
             // Obiekt nie istnieje w bazie danych

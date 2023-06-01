@@ -50,12 +50,16 @@ function App() {
                     <SearchMoviesPage/>
                 </Route>
 
-                <Route path='/reviewlist/:bookId'>
+                <Route path='/reviewlist/:movieId'>
                     <ReviewListPage/>
                 </Route>
 
-                <Route path='/checkout/:bookId'>
-                    <MovieCheckoutPage/>
+                <Route path='/checkout/:movieId'>
+                    <MovieCheckoutPage />
+                </Route>
+
+                <Route path='/movieofday/:movieId'>
+                    <MovieCheckoutPage />
                 </Route>
 
 

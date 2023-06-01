@@ -8,6 +8,7 @@ export const Navbar = () => {
 
     const {oktaAuth, authState} = useOktaAuth();
     const [isAdmin, setIsAdmin] = useState(false);
+    const [movieOfTheDay, setMovieOfTheDay] = useState(null);
 
     const handleLogout = async () => oktaAuth.signOut()
 
@@ -21,9 +22,33 @@ export const Navbar = () => {
         }
     }, [authState])
 
+    useEffect(() => {
+
+        const getRandomMovieId = async () => {
+
+
+            const url: string = `${process.env.REACT_APP_API}/movies/randomMovieId`;
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error('Something went wrong!');
+            }
+
+            const responseJson = await response.json();
+            setMovieOfTheDay(responseJson);
+
+        };
+        getRandomMovieId().catch((error: any) => {
+
+        })
+    }, []);
+
     if(!authState){
         return <SpinnerLoading/>
     }
+
+
 
     return (
         <nav className='navbar navbar-expand-lg navbar-dark main-color py-3'>
@@ -47,9 +72,17 @@ export const Navbar = () => {
                         <li className='nav-item'>
                             <NavLink className='nav-link' to='/home'> Strona główna </NavLink>
                         </li>
+
                         <li className='nav-item'>
                             <NavLink className='nav-link' to='/search'> Znajdź film </NavLink>
                         </li>
+
+
+                        <li className='nav-item'>
+                            <NavLink className='nav-link' to={`/movieofday/${movieOfTheDay}`}> Film dnia </NavLink>
+                        </li>
+
+
                         {authState.isAuthenticated &&
 
                             <li className='nav-item'>

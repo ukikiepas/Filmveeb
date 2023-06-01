@@ -10,6 +10,7 @@ import {LatestReviews} from "./LatestReviews";
 import {useOktaAuth} from "@okta/okta-react";
 import reviewRequestModel from "../../models/ReviewRequestModel";
 import ReviewRequestModel from "../../models/ReviewRequestModel";
+import CurrentDate from "../utils/CurrentDate";
 import {Link} from "react-router-dom";
 
 export default function MovieCheckoutPage() {
@@ -46,6 +47,10 @@ export default function MovieCheckoutPage() {
 
     const movieId = (window.location.pathname).split('/')[2];
 
+    // do filmu dnia
+    const typeOfPage = (window.location.pathname).split('/')[1];
+    const [isMovieOfADay, setIsMovieOfADay] = useState(false);
+
 
     //do platnosci !
     const [displayError, setDisplayError] = useState(false);
@@ -58,6 +63,13 @@ export default function MovieCheckoutPage() {
     // use Effect do wczytywania filmu
     useEffect(() => {
         const fetchMovie = async () => {
+            // do ustalenia czy to strona z filmem dnia
+            if(typeOfPage === 'movieofday'){
+                setIsMovieOfADay(true);
+            }else {
+                setIsMovieOfADay(false);
+            }
+
             const baseUrl: string = `${process.env.REACT_APP_API}/movies/${movieId}`;
 
             const response = await fetch(baseUrl);
@@ -465,6 +477,19 @@ export default function MovieCheckoutPage() {
                     Najpierw opłać swoje zaległości i/lub zwróć zaległe filmy!
                     </div>
                 }
+                {
+                    isMovieOfADay &&
+                    <div className='justify-center'>
+                        <h1 className='mt-4 text-center text-primary'>Film Dla Ciebie na dziś
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                 className="bi bi-heart-fill text-danger m-2" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                            </svg>
+                        </h1>
+                        <h4 className='text-center'><CurrentDate/></h4>
+                    </div>
+                }
                 <div className='row mt-5'>
                     <div className='col-sm-2 col-md-2'>
                         {movie?.img ?
@@ -496,6 +521,19 @@ export default function MovieCheckoutPage() {
                 {displayError && <div className='alert alert-danger mt-3' role='alert'>
                     Najpierw opłać swoje zaległości i/lub zwróć zaległe filmy!
                 </div>
+                }
+                {
+                    isMovieOfADay &&
+                    <div className='justify-center'>
+                        <h1 className='mt-4 text-center text-primary'>Film dnia na dziś
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                                 className="bi bi-heart-fill text-danger m-2" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                            </svg>
+                        </h1>
+                        <h4 className='text-center'><CurrentDate/></h4>
+                    </div>
                 }
                 <div className='d-flex justify-content-center align-items-center'>
                     {movie?.img ?
